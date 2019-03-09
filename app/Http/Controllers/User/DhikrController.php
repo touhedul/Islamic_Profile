@@ -20,6 +20,7 @@ class DhikrController extends Controller
     public function dhikrIndex(){
         $dhikrs = Dhikr::all();
         $userDhikrs = UserDhikr::where('user_id',Auth::id())->get();
+       // return $dhikrs;
         return view('user.dhikr',compact('dhikrs','userDhikrs'));
     }
 

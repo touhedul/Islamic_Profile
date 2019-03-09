@@ -47,6 +47,18 @@
                     $("#show").html(data);
                 });
             });
+//Manage Question Anser
+            $("#question-answer").click(function () {
+                $.get("{{route('moderator.question.answer.index')}}",function (data) {
+                    $("#show").html(data);
+                });
+            });
+//Manage dhikr
+            $("#dhikr").click(function () {
+                $.get("{{route('moderator.dhikr.index')}}",function (data) {
+                    $("#show").html(data);
+                });
+            });
 
 
         });

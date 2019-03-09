@@ -64,6 +64,8 @@
                                 @endif
                             </div>
                         </div>
+                        <br><br>
+                        <a style="margin-left: 50px" href="login/facebook" class="btn btn-success">Login with Facebook</a>
                     </form>
                 </div>
             </div>
@@ -126,4 +128,7 @@
         </div>
     </div>
 </div>
+    <p style="text-align: center; margin-top: 120px">
+        <a target="_blank" href="https://www.freeprivacypolicy.com/privacy/view/b7d6accbf8463293d5fd8a571d579830">Privecy Policy</a>
+    </p>
 @endsection

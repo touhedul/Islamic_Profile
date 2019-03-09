@@ -51,8 +51,16 @@
             </li>
 
             <li class="treeview">
-                <a href="#">
+                <a href="#" id="question-answer">
                     <i class="fa fa-question"></i> <span>Question Answer</span>
+                    <span class="pull-right-container">
+            </span>
+                </a>
+
+            </li>
+            <li class="treeview">
+                <a href="#" id="dhikr">
+                    <i class="fa fa-ticket"></i> <span>Dhikr</span>
                     <span class="pull-right-container">
             </span>
                 </a>

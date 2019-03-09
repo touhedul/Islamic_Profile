@@ -12,7 +12,6 @@ class UserDhikr extends Model
     ];
 
     public function dhikrs($dhikr_id){
-
         return Dhikr::find($dhikr_id);
     }
 }

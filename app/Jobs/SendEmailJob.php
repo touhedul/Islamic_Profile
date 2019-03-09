@@ -14,18 +14,16 @@ use Illuminate\Support\Facades\Mail;
 class SendEmailJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
-
     public $user;
+
     /**
      * Create a new job instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct($user)
     {
-        //$this->handle();
-        // Mail::to('astro@gmail.com')->send(new CheckEmail());
-        //$this->user = $user;
+        $this->user = $user;
     }
 
     /**
@@ -35,8 +33,6 @@ class SendEmailJob implements ShouldQueue
      */
     public function handle()
     {
-        //dd("sldf");
-        Mail::to('astro@gmail.com')->send(new CheckEmail());
-        //$this->user->notify(new EmailVarification($this->user))->delay(now()->addSecond(5));;
+        $this->user->notify(new EmailVarification($this->user));
     }
 }

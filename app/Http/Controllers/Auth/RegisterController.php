@@ -87,8 +87,7 @@ class RegisterController extends Controller
     {
         $this->validator($request->all())->validate();
         event(new Registered($user = $this->create($request->all())));
-        //SendEmailJob::dispatch()->delay(now()->addSecond(5));;
-        $user->notify(new EmailVarification($user));
+        SendEmailJob::dispatch($user)->delay(now()->addSecond(5));;
         return redirect(route('home'))->with('success','Registration complete! Please confirm your email. Thank You!');
     }
 }

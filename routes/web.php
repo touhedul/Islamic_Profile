@@ -18,6 +18,10 @@
 Auth::routes();
 //Home
 Route::get('/', 'HomeController@index')->name('home');
+
+//User Social login routes
+Route::get('login/{socialsite}', 'Auth\LoginController@redirectToProvider');
+Route::get('login/{socialsite}/callback', 'Auth\LoginController@handleProviderCallback');
 //User Routes
 Route::resource('user', 'User\UserProfileController');
 
@@ -25,7 +29,8 @@ Route::get('users/change-password', 'User\ChangePasswordController@changePasswor
 Route::post('users/change-password', 'User\ChangePasswordController@changePassword')->name('change.password');
 //Email Verification
 Route::get('users/{token}', 'User\EmailVerificationController@verify')->name('user.email.verification');
-
+//if status is 0 then verification email send again.
+Route::get('users/send/{verifyEmail}','User\EmailVerificationController@sendVerifyEmail')->name('user.send.verify.email');
 //Salat creation Routes
 Route::post('fajr', 'User\SalatCreationController@createFajr');
 Route::post('zuhr', 'User\SalatCreationController@createZuhr');
@@ -91,8 +96,9 @@ Route::prefix('admin')->group(function () {
     Route::get('index', 'Admin\AdminController@index')->name('admin.index');
 });
 
-//admin controller routes
 Route::middleware(['onlyAjaxRequest'])->group(function () {
+
+//admin controller routes
     Route::prefix('admin')->group(function () {
         Route::get('regular-admin', 'Admin\AdminController@regularAdmin')->name('admin.regular-admin');
         Route::get('delete', 'Admin\AdminController@deleteAdmin')->name('admin.delete');
@@ -104,10 +110,8 @@ Route::middleware(['onlyAjaxRequest'])->group(function () {
         Route::get('enable', 'Admin\AdminController@enableAdmin')->name('admin.enable');
         Route::get('disable', 'Admin\AdminController@disableAdmin')->name('admin.disable');
     });
-});
 
 //moderator
-Route::middleware(['onlyAjaxRequest'])->group(function () {
     Route::prefix('moderator')->group(function () {
         Route::name('moderator.')->group(function () {
 
@@ -122,9 +126,8 @@ Route::middleware(['onlyAjaxRequest'])->group(function () {
         });
 
     });
-});
+
 //user
-Route::middleware(['onlyAjaxRequest'])->group(function () {
     Route::prefix('manage-user')->group(function () {
         Route::name('manage.user.')->group(function () {
 
@@ -135,20 +138,44 @@ Route::middleware(['onlyAjaxRequest'])->group(function () {
         });
 
     });
-});
 
 //change password
-Route::middleware(['onlyAjaxRequest'])->group(function () {
 
     Route::get('admin/password', 'Admin\ChangePasswordController@index')->name('change.password');
     Route::post('admin/password/change', 'Admin\ChangePasswordController@changePassword')->name('admin.password.change');
 
-});
 //admin hadith controller routes
-Route::middleware('onlyAjaxRequest')->group(function (){
    Route::prefix('moderator/hadith')->group(function(){
       Route::name('moderator.hadith.')->group(function (){
           Route::get('index','Admin\HadithManageController@index')->name('index');
+          Route::get('get','Admin\HadithManageController@get')->name('get');
+          Route::get('delete','Admin\HadithManageController@delete')->name('delete');
+          Route::get('approve','Admin\HadithManageController@approve')->name('approve');
+          Route::get('refuse','Admin\HadithManageController@refuse')->name('refuse');
+          Route::post('manage','Admin\HadithManageController@manage')->name('manage');
       }) ;
    }) ;
+//admin question Answer controller routes
+   Route::prefix('moderator/qa')->group(function(){
+      Route::name('moderator.question.answer.')->group(function (){
+          Route::get('index','Admin\QuestionAnswerManageController@index')->name('index');
+          Route::get('get','Admin\QuestionAnswerManageController@get')->name('get');
+          Route::get('delete','Admin\QuestionAnswerManageController@delete')->name('delete');
+          Route::post('manage','Admin\QuestionAnswerManageController@manage')->name('manage');
+      }) ;
+   }) ;
+
+   Route::prefix('moderators/dhikr')->group(function (){
+       Route::name('moderator.dhikr.')->group(function (){
+
+           Route::get('index','Admin\DhikrManageController@index')->name('index');
+           Route::get('get','Admin\DhikrManageController@get')->name('get');
+           Route::get('delete','Admin\DhikrManageController@delete')->name('delete');
+           Route::post('add','Admin\DhikrManageController@add')->name('add');
+           Route::post('update','Admin\DhikrManageController@update')->name('update');
+
+
+       });
+   });
+
 });

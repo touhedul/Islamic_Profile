@@ -3,8 +3,14 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Models\User\User;
+use App\Notifications\EmailVarification;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Str;
+use Illuminate\Validation\ValidationException;
+use Laravel\Socialite\Facades\Socialite;
 
 class LoginController extends Controller
 {
@@ -38,11 +44,36 @@ class LoginController extends Controller
         $this->middleware('guest')->except('logout');
     }
 
+    //social login
+    /**
+     * Redirect the user to the GitHub authentication page.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function redirectToProvider($socialSite)
+    {
+        return Socialite::driver($socialSite)->redirect();
+    }
+
+    /**
+     * Obtain the user information from GitHub.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function handleProviderCallback($socialSite)
+    {
+        $user = Socialite::driver($socialSite)->stateless()->user();
+
+        return $user->getEmail();
+
+    }
+
     //override function
     public function showLoginForm()
     {
         abort(404);
     }
+
     //override function
     protected function credentials(Request $request)
     {
@@ -68,6 +99,25 @@ class LoginController extends Controller
 
         // After logout, redirect to login screen again
         return redirect()->route('home');
+    }
+
+
+    //override
+//    login response according to status
+    protected function sendFailedLoginResponse(Request $request)
+    {
+        $user = User::where('email', $request->email)->first();
+        $email = $user->email;
+        $email = Crypt::encryptString($email);
+        if ($user) {
+            if ($user->status == 0) {
+                return back()->with('error', 'Your Id is not activated. Please 
+                <a href="users/send/'.$email.'">click here</a> to resend verification email.');
+            }
+        }
+        throw ValidationException::withMessages([
+            $this->username() => [trans('auth.failed')],
+        ]);
     }
 
 
